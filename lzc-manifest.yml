@@ -1,0 +1,234 @@
+# app 的唯一 id,上架到商店需要保证不要冲突,尽量使用开发者自己的域名作为后缀.
+package: cloud.lazycat.app.liu.invoiceninja
+# app 的版本
+version: 5.12.28
+
+name: Invoice Ninja
+keywords: invoiceninja,invoice,billing
+description: Invoice Ninja 自托管发票管理系统
+
+# 软件名称及多语言描述
+locales:
+  zh:
+    name: Invoice Ninja
+    description: |
+      ## Invoice Ninja 自托管发票管理系统
+
+      Invoice Ninja 是一款强大的开源发票、报价、费用和时间追踪应用，使用 Laravel 和 Flutter 构建。支持超过 40 种支付网关（包括 Stripe、PayPal 等），100+ 种货币，提供完整的发票生命周期管理、自动化账单、客户门户、项目管理等企业级功能。
+
+      ### 核心特性
+
+      - **发票管理**：自定义品牌发票设计，支持循环发票和自动账单
+      - **在线支付**：集成 40+ 支付网关，支持信用卡、ACH、比特币等多种支付方式
+      - **多币种支持**：支持 100+ 种货币和多语言国际化
+      - **费用追踪**：完整的费用报告和项目时间追踪
+      - **客户门户**：为客户提供独立的查看和支付入口
+      - **自动化**：定时发票、批量发票、自动提醒
+
+      ### 快速开始
+
+      **默认登录凭证：**
+      - 邮箱：`admin@lazycat.cloud`
+      - 密码：`changeme!`
+      - ⚠️ **强烈建议首次登录后立即修改默认密码！**
+
+      ### 部署步骤
+
+      1. 应用安装完成后，服务会自动启动（包含 Invoice Ninja、MySQL、Redis、Nginx）
+      2. 等待所有容器进入 healthy 状态（约 1-2 分钟）
+      3. 使用默认账号密码登录系统
+      4. 首次登录后请立即修改密码：设置 → 用户管理 → 修改密码
+      5. 配置邮件设置（可选）：设置 → 邮件配置，填入 SMTP 信息以启用邮件通知功能
+
+      ### 高级配置
+
+      如需自定义配置（域名、数据库密码、邮件等），请在首次启动前修改环境变量：
+      - `APP_URL`：访问地址（默认使用懒猫平台分配的域名）
+      - `DB_PASSWORD`：数据库密码（建议修改默认值 `ninja`）
+      - `MAIL_*`：邮件服务器配置（用于发送发票和提醒邮件）
+
+      ### 数据备份
+
+      重要数据存储在以下目录，建议定期备份：
+      - `/lzcapp/var/mysql`：数据库文件
+      - `/lzcapp/var/storage`：附件和文件
+      - `/lzcapp/var/public`：公开资源
+
+      **官方网站：** https://invoiceninja.com
+      **GitHub：** https://github.com/invoiceninja/invoiceninja
+      **仓库地址：** https://github.com/lazycatapps/invoiceninja.git
+
+  en:
+    name: Invoice Ninja
+    description: |
+      ## Invoice Ninja Self-Hosted Invoicing Platform
+
+      Invoice Ninja is a powerful open-source invoicing, quotes, expenses, and time-tracking application built with Laravel and Flutter. It supports 40+ payment gateways (including Stripe, PayPal), 100+ currencies, and provides enterprise-grade features like invoice lifecycle management, automated billing, client portals, and project management.
+
+      ### Key Features
+
+      - **Invoice Management**: Custom branded invoice design with recurring invoices and auto-billing
+      - **Online Payments**: Integrated with 40+ payment gateways, supporting credit cards, ACH, Bitcoin, and more
+      - **Multi-Currency Support**: Support for 100+ currencies and multiple languages
+      - **Expense Tracking**: Complete expense reporting and project time tracking
+      - **Client Portal**: Dedicated portal for clients to view and pay invoices
+      - **Automation**: Scheduled invoices, batch invoicing, and automatic reminders
+
+      ### Quick Start
+
+      **Default Login Credentials:**
+      - Email: `admin@lazycat.cloud`
+      - Password: `changeme!`
+      - ⚠️ **IMPORTANT: Change the default password immediately after first login!**
+
+      ### Deployment Steps
+
+      1. After installation, services will start automatically (Invoice Ninja, MySQL, Redis, Nginx)
+      2. Wait for all containers to become healthy (about 1-2 minutes)
+      3. Log in with the default credentials
+      4. Change password immediately after first login: Settings → User Management → Change Password
+      5. Configure email settings (optional): Settings → Email Configuration, enter SMTP details to enable email notifications
+
+      ### Advanced Configuration
+
+      To customize settings (domain, database password, email, etc.), modify environment variables before first startup:
+      - `APP_URL`: Access URL (defaults to Lazycat platform assigned domain)
+      - `DB_PASSWORD`: Database password (recommended to change default `ninja`)
+      - `MAIL_*`: Mail server configuration (for sending invoices and reminder emails)
+
+      ### Data Backup
+
+      Important data is stored in the following directories, regular backups recommended:
+      - `/lzcapp/var/mysql`: Database files
+      - `/lzcapp/var/storage`: Attachments and files
+      - `/lzcapp/var/public`: Public resources
+
+      **Official Website:** https://invoiceninja.com
+      **GitHub:** https://github.com/invoiceninja/invoiceninja
+      **Repository:** https://github.com/lazycatapps/invoiceninja.git
+
+# 软件本身的 license
+license: https://github.com/invoiceninja/invoiceninja/blob/master/LICENSE
+
+# 软件的主页,会在商店等地方体现
+homepage: https://github.com/lazycatapps/invoiceninja
+
+# lpk 的作者,会在商店等地方体现
+author: liu
+
+# application 作为一个特殊的 container 运行，对应的 service 名称为固定的`app`，其他 service 可以通过此名称与 app 进行通讯
+application:
+  # 是否存在后台任务，若存在系统不会对此 app 进行主动休眠
+  background_task: true
+  # 期望的 app 子域名，最终以 /lzcapp/run/${subdomain} 为准
+  subdomain: invoiceninja
+  routes:
+    - /=http://nginx:80
+  public_path:
+    - /                         # 无需登录即可访问
+  # 是否启用多实例
+  multi_instance: false
+
+services:
+  invoiceninja:
+    # lzc-cli appstore copy-image invoiceninja/invoiceninja-debian:latest
+    image: registry.lazycat.cloud/liu/invoiceninja/invoiceninja-debian:7077f5d0594abd14
+    environment:
+      - APP_URL=https://${LAZYCAT_APP_DOMAIN}
+      - APP_KEY=base64:RR++yx2rJ9kdxbdh3+AmbHLDQu+Q76i++co9Y8ybbno=
+      - APP_ENV=production
+      - APP_DEBUG=true
+      - REQUIRE_HTTPS=false
+      - PHANTOMJS_PDF_GENERATION=false
+      - PDF_GENERATOR=snappdf
+      - TRUSTED_PROXIES=*
+      - CACHE_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+      - SESSION_DRIVER=redis
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=null
+      - REDIS_PORT=6379
+      - FILESYSTEM_DISK=debian_docker
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=ninja
+      - DB_USERNAME=ninja
+      - DB_PASSWORD=ninja
+      - DB_ROOT_PASSWORD=ninjaAdm1nPassword
+      - DB_CONNECTION=mysql
+      - IN_USER_EMAIL=admin@lazycat.cloud
+      - IN_PASSWORD=changeme!
+      - MAIL_MAILER=log
+      - MAIL_HOST=smtp.mailtrap.io
+      - MAIL_PORT=2525
+      - MAIL_USERNAME=null
+      - MAIL_PASSWORD=null
+      - MAIL_ENCRYPTION=null
+      - MAIL_FROM_ADDRESS=user@example.com
+      - MAIL_FROM_NAME=Self Hosted User
+      - MYSQL_ROOT_PASSWORD=ninjaAdm1nPassword
+      - MYSQL_USER=ninja
+      - MYSQL_PASSWORD=ninja
+      - MYSQL_DATABASE=ninja
+      - NORDIGEN_SECRET_ID=
+      - NORDIGEN_SECRET_KEY=
+      - IS_DOCKER=true
+      - SCOUT_DRIVER=null
+    depends_on:
+      - mysql
+      - redis
+    binds:
+      - /lzcapp/var/public:/var/www/html/public
+      - /lzcapp/var/storage:/var/www/html/storage
+
+  nginx:
+    # lzc-cli appstore copy-image nginx:alpine
+    image: registry.lazycat.cloud/liu/library/nginx:baceb9c791a4ad0e
+    depends_on:
+      - invoiceninja
+    setup_script: |
+      set -e  # Exit immediately if a command exits with a non-zero status
+      set -u  # Treat unset variables as an error
+
+      cp -rf /lzcapp/pkg/content/nginx/* /lzcapp/var/nginx/conf.d/
+
+    binds:
+      - /lzcapp/var/nginx/conf.d:/etc/nginx/conf.d
+      - /lzcapp/var/public:/var/www/html/public
+      - /lzcapp/var/storage:/var/www/html/storage
+
+  mysql:
+    # lzc-cli appstore copy-image mysql:8
+    image: registry.lazycat.cloud/liu/library/mysql:4810e1eb44863beb
+    environment:
+      - MYSQL_DATABASE=ninja
+      - MYSQL_USER=ninja
+      - MYSQL_PASSWORD=ninja
+      - MYSQL_ROOT_PASSWORD=ninjaAdm1nPassword
+    binds:
+      - /lzcapp/var/mysql:/var/lib/mysql
+    health_check:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - localhost
+        - -uninja
+        - -pninja
+
+  redis:
+    # lzc-cli appstore copy-image redis:alpine
+    image: registry.lazycat.cloud/liu/library/redis:93ea5a3d39e127e5
+    binds:
+      - /lzcapp/var/redis/data:/data
+    health_check:
+      test:
+        - CMD
+        - redis-cli
+        - ping
+
+unsupported_platforms:
+  - ios
+  - android
+  - tvos
